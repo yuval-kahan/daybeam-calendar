@@ -10,8 +10,8 @@ import {
   hasGoogleAccount,
   hasOAuthClient,
   isAllDay,
-  listCalendarEvents,
   listEvents,
+  listPublicHolidayEvents,
   deleteLocalEvent,
   sameLocalDay,
   startOfDay
@@ -537,7 +537,7 @@ async function loadCalendar({ instant = false, preserveOnMiss = false } = {}) {
     const connected = await hasGoogleAccount();
     const [events, holidays] = await Promise.all([
       listEvents(range.start, range.end),
-      connected ? listSelectedHolidayEvents(range.start, range.end) : Promise.resolve({ events: [], errors: [] })
+      listSelectedHolidayEvents(range.start, range.end)
     ]);
     if (loadId !== state.loadId) return;
     state.events = events;
@@ -570,7 +570,7 @@ async function listSelectedHolidayEvents(start, end) {
   const selectedCalendars = HOLIDAY_CALENDARS.filter((calendar) => state.settings.holidayCalendars.includes(calendar.key));
   const results = await Promise.all(selectedCalendars.map(async (calendar) => {
     try {
-      const events = await listCalendarEvents(start, end, calendar.calendarId);
+      const events = await listPublicHolidayEvents(start, end, calendar.calendarId, calendar.key);
       return {
         calendar,
         events: events.map((event) => ({ ...event, daybeamHolidayCategory: calendar.key })),
