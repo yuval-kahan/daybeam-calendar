@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daybeam Calendar</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="popup-page">
+  <main class="app-shell">
+    <div id="refresh-toast" class="refresh-toast" role="status" aria-live="polite" aria-hidden="true">
+      <span class="refresh-toast-check" aria-hidden="true">✓</span>
+      <span>Calendar refreshed</span>
+    </div>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Daybeam Calendar home">
+        <img src="icons/48.png" alt="" width="34" height="34">
+        <span><strong>Daybeam Calendar</strong></span>
+      </a>
+      <div class="calendar-toolbar">
+        <div class="date-navigation">
+          <button id="previous-button" class="nav-button" type="button" aria-label="Previous period">‹</button>
+          <button id="next-button" class="nav-button" type="button" aria-label="Next period">›</button>
+          <button id="today-button" class="today-button" type="button">Today</button>
+          <button id="period-label" class="period-label period-picker-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" title="Choose month and year"></button>
+          <section id="date-picker-popover" class="date-picker-popover hidden" role="dialog" aria-label="Go to date" aria-hidden="true">
+            <div class="date-picker-heading"><strong>Go to date</strong><button id="date-picker-close" class="picker-close" type="button" aria-label="Close">×</button></div>
+            <div class="date-picker-year-row">
+              <button id="date-picker-previous-year" class="picker-year-arrow" type="button" aria-label="Previous year">‹</button>
+              <label class="sr-only" for="date-picker-year">Year</label>
+              <input id="date-picker-year" type="number" min="1900" max="2100" step="1" inputmode="numeric">
+              <button id="date-picker-next-year" class="picker-year-arrow" type="button" aria-label="Next year">›</button>
+              <button id="date-picker-today" class="picker-today" type="button">Today</button>
+            </div>
+            <div id="date-picker-months" class="date-picker-months"></div>
+          </section>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="account-status" class="account-chip disconnected" type="button" aria-live="polite" aria-haspopup="menu" aria-expanded="false" title="Not connected to Google Calendar">
+          <span id="account-avatar" class="account-avatar" aria-hidden="true">?</span>
+          <span id="account-state-dot" class="account-state-dot disconnected-dot" aria-hidden="true"></span>
+          <span id="account-name">Not connected</span>
+        </button>
+        <div id="account-menu" class="account-menu hidden" role="menu" aria-label="Google account">
+          <div class="account-menu-heading"><strong id="account-menu-name">Google account</strong><small id="account-menu-email"></small></div>
+          <p id="account-menu-hint" class="account-menu-hint">Events stay on this device until Google Calendar is connected.</p>
+          <button id="account-connect-button" type="button" role="menuitem">Connect Google Calendar</button>
+          <button id="account-logout-button" class="hidden" type="button" role="menuitem">Log out</button>
+        </div>
+        <span id="sync-indicator" class="sync-indicator" aria-live="polite"></span>
+        <button id="view-menu-button" class="icon-button" type="button" aria-label="Choose calendar view" aria-expanded="false" title="Choose calendar view">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z"/></svg>
+        </button>
+        <button id="holiday-menu-button" class="icon-button" type="button" aria-label="Holiday calendars" aria-haspopup="dialog" aria-expanded="false" title="Choose holiday calendars">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4h-1V2h-2v2H8V2H6v2H5C3.9 4 3 4.9 3 6v13c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 15H5V9h14v10ZM7 11h3v3H7v-3Zm5 0h3v3h-3v-3Zm5 0h1v3h-1v-3Zm-10 5h3v2H7v-2Zm5 0h3v2h-3v-2Z"/></svg>
+        </button>
+        <button id="refresh-button" class="icon-button" type="button" aria-label="Refresh calendar" title="Refresh calendar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.93 9h-2.02A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35Z"/></svg>
+        </button>
+        <button id="settings-button" class="settings-button" type="button" aria-label="Settings" title="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.6l-1.92-3.32a.5.5 0 0 0-.59-.21l-2.39.96a7.3 7.3 0 0 0-1.62-.93l-.36-2.53a.5.5 0 0 0-.5-.45h-3.8a.5.5 0 0 0-.5.45L9.24 5.38c-.59.24-1.13.55-1.62.93l-2.39-.96a.5.5 0 0 0-.59.21L2.72 8.88a.5.5 0 0 0 .12.6l2.03 1.58c-.05.31-.07.63-.07.94s.02.63.07.94l-2.03 1.58a.5.5 0 0 0-.12.6l1.92 3.32a.5.5 0 0 0 .59.21l2.39-.96c.49.38 1.03.69 1.62.93l.36 2.53a.5.5 0 0 0 .5.45h3.8a.5.5 0 0 0 .5-.45l.36-2.53c.59-.24 1.13-.55 1.62-.93l2.39.96a.5.5 0 0 0 .59-.21l1.92-3.32a.5.5 0 0 0-.12-.6l-2.03-1.58Z"/><circle cx="12" cy="12" r="3.2"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section id="calendar-panel" class="calendar-panel hidden">
+      <div class="welcome-row">
+        <div><p class="eyebrow" id="hello-date">TODAY</p><h1 id="welcome-title">Your day</h1></div>
+      </div>
+
+      <nav id="view-switcher" class="view-switcher hidden" aria-label="Calendar view">
+        <button data-view="agenda" type="button">Agenda</button><button data-view="day" type="button">Day</button><button data-view="week" type="button">Week</button><button data-view="month" type="button">Month</button><button data-view="month-scroll" type="button">Month Scroll</button><button data-view="year" type="button">Year</button>
+      </nav>
+      <section id="holiday-menu" class="holiday-menu hidden" role="dialog" aria-label="Holiday calendars" aria-hidden="true">
+        <div class="holiday-menu-heading"><div><strong>Holiday calendars</strong><span>Show selected dates in Daybeam</span></div><button id="holiday-menu-close" class="picker-close" type="button" aria-label="Close">×</button></div>
+        <label class="holiday-option"><input type="checkbox" data-holiday-calendar="jewish"><span><strong>Jewish holidays</strong><small>Israel calendar</small></span></label>
+        <label class="holiday-option"><input type="checkbox" data-holiday-calendar="christian"><span><strong>Christian holidays</strong><small>Christian calendar</small></span></label>
+        <label class="holiday-option"><input type="checkbox" data-holiday-calendar="islamic"><span><strong>Islamic holidays</strong><small>Muslim calendar</small></span></label>
+        <div id="holiday-menu-summary" class="holiday-menu-summary" aria-live="polite">None selected</div>
+      </section>
+      <div id="quick-add-overlay" class="event-modal-overlay hidden" aria-hidden="true">
+        <form id="quick-add-form" class="quick-add-form event-modal" role="dialog" aria-modal="true" aria-labelledby="event-modal-title">
+          <div class="form-heading"><div><span class="modal-eyebrow">DAYBEAM CALENDAR</span><strong id="event-modal-title">Add event</strong></div><button id="quick-add-close" class="plain-close" type="button" aria-label="Close">×</button></div>
+          <label class="sr-only" for="event-title">Event title</label>
+          <input id="event-title" name="title" type="text" placeholder="Add a title" maxlength="200" required>
+          <div class="form-row">
+            <label><span>Date</span><input id="event-date" name="date" type="date" required></label>
+            <label><span>Time</span><input id="event-time" name="time" type="time" required></label>
+            <label class="duration-field"><span>Minutes</span><select id="event-duration" name="duration"><option>15</option><option selected>30</option><option>45</option><option>60</option><option>90</option><option>120</option></select></label>
+          </div>
+          <div class="form-row modal-location-row">
+            <label><span>Location (optional)</span><input id="event-location" name="location" type="text" maxlength="250" placeholder="Add a location"></label>
+          </div>
+          <div class="modal-bottom-row"><span id="add-status" class="form-status" aria-live="polite"></span><div class="modal-actions"><button id="quick-add-cancel" class="secondary-button" type="button">Cancel</button><button class="primary-button" type="submit">Save</button></div></div>
+        </form>
+      </div>
+
+      <p id="calendar-error" class="error-message hidden" role="alert"></p>
+      <section id="calendar-content" aria-live="polite"></section>
+      <button id="quick-add-toggle" class="add-button" type="button" aria-label="Add event"><span aria-hidden="true">+</span><span class="add-button-label">Add event</span></button>
+      <footer class="footer-row"><span id="connection-dot" class="live-dot disconnected-dot"></span><span id="connection-label">Not connected · Local only</span></footer>
+    </section>
+
+    <section id="settings-screen" class="settings-screen hidden" role="region" aria-labelledby="popup-settings-title" aria-hidden="true">
+      <div class="settings-screen-heading">
+        <div><p class="eyebrow">DAYBEAM PREFERENCES</p><h1 id="popup-settings-title">Settings</h1><p>Choose how Daybeam fits into your day.</p></div>
+        <button id="settings-back-button" class="settings-back-button" type="button"><span aria-hidden="true">‹</span> Back to calendar</button>
+      </div>
+      <div class="settings-grid">
+        <label class="setting-row"><span><strong>Default calendar view</strong><small>Open to the view you use most.</small></span><select id="popup-default-view"><option value="agenda">Agenda</option><option value="day">Day</option><option value="week">Week</option><option value="month">Month</option><option value="month-scroll">Month Scroll</option><option value="year">Year</option></select></label>
+        <label class="setting-row"><span><strong>Remind me before events</strong><small>Daybeam checks for upcoming events while Chrome is running.</small></span><select id="popup-reminder-minutes"><option value="0">At start time</option><option value="5">5 minutes</option><option value="10">10 minutes</option><option value="15">15 minutes</option><option value="30">30 minutes</option></select></label>
+        <label class="setting-row"><span><strong>Desktop reminders</strong><small>Show a notification you can snooze for five minutes.</small></span><input id="popup-notifications" type="checkbox"></label>
+        <label class="setting-row"><span><strong>Speak reminders aloud</strong><small>Read the event title when a reminder appears.</small></span><input id="popup-voice" type="checkbox"></label>
+        <label class="setting-row"><span><strong>Next event on the icon</strong><small>Show a short countdown on the toolbar button.</small></span><input id="popup-show-badge" type="checkbox"></label>
+      </div>
+      <div class="settings-actions"><button id="popup-disconnect-button" class="disconnect-button" type="button">Disconnect Google</button><span id="popup-settings-status" class="settings-status" aria-live="polite"></span></div>
+    </section>
+  </main>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

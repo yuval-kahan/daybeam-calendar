@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add an event · Daybeam</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="standalone-page">
+  <main class="standalone-card">
+    <a class="brand" href="popup.html"><img src="icons/48.png" alt="" width="38" height="38"><span><strong>daybeam</strong><small>your day, in view</small></span></a>
+    <h1>Add a little something</h1>
+    <p>Drop a plan into your primary Google Calendar in a few seconds.</p>
+    <form id="quick-add-form" class="quick-add-form">
+      <label class="sr-only" for="event-title">Event title</label>
+      <input id="event-title" type="text" maxlength="200" placeholder="What are you planning?" required>
+      <div class="form-row">
+        <label><span>Date</span><input id="event-date" type="date" required></label>
+        <label><span>Time</span><input id="event-time" type="time" required></label>
+        <label class="duration-field"><span>Minutes</span><select id="event-duration"><option>15</option><option selected>30</option><option>45</option><option>60</option><option>90</option><option>120</option></select></label>
+      </div>
+      <div class="form-row">
+        <label style="flex:1"><span>Location (optional)</span><input id="event-location" type="text" maxlength="250" placeholder="Where are you meeting?"></label>
+      </div>
+      <div class="form-row form-submit-row"><span id="add-status" class="form-status" aria-live="polite"></span><button id="save-button" class="primary-button" type="submit">Save event</button></div>
+    </form>
+  </main>
+  <script type="module" src="quick-add.js"></script>
+</body>
+</html>
